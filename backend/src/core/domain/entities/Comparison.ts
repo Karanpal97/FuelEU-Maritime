@@ -1,7 +1,3 @@
-/**
- * Comparison Entity - Core Domain
- * For comparing routes against baseline
- */
 export interface RouteComparison {
   routeId: string;
   vesselType: string;

@@ -1,7 +1,3 @@
-/**
- * Banking Controller - HTTP Inbound Adapter
- * Article 20 - Banking
- */
 import { Request, Response } from 'express';
 import { BankSurplusUseCase } from '../../../../core/application/usecases/BankSurplus';
 import { ApplyBankedUseCase } from '../../../../core/application/usecases/ApplyBanked';

@@ -1,12 +1,8 @@
-/**
- * Compute Compliance Balance Use Case
- * Calculates CB = (Target - Actual) × Energy in scope
- */
+
 import { ComplianceRepository } from '../../ports/outbound/ComplianceRepository';
 import { RouteRepository } from '../../ports/outbound/RouteRepository';
 import { ComplianceBalance } from '../../domain/entities/Compliance';
 
-// Constants from Fuel EU Maritime Regulation
 const TARGET_INTENSITY_2025 = 89.3368; // gCO₂e/MJ (2% below 91.16)
 const ENERGY_CONVERSION_FACTOR = 41000; // MJ per tonne of fuel
 
@@ -63,7 +59,6 @@ export class ComputeComplianceBalanceUseCase {
   async getBalance(shipId: string, year: number): Promise<ComplianceBalance> {
     const balance = await this.complianceRepository.getBalance(shipId, year);
     if (!balance) {
-      // If not computed yet, compute it now
       return this.execute({ shipId, year });
     }
     return balance;

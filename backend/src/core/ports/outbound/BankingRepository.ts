@@ -1,6 +1,4 @@
-/**
- * Banking Repository Port - Outbound Interface
- */
+
 import { BankEntry } from '../../domain/entities/Banking';
 
 export interface BankingRepository {

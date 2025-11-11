@@ -1,7 +1,3 @@
-/**
- * Compliance Entity - Core Domain
- * Represents compliance balance calculations for ships
- */
 export interface ShipCompliance {
   id: number;
   shipId: string;

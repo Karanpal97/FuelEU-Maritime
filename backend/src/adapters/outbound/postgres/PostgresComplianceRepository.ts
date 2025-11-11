@@ -1,6 +1,3 @@
-/**
- * Prisma Compliance Repository Implementation
- */
 import { PrismaClient } from '@prisma/client';
 import { ComplianceRepository } from '../../../core/ports/outbound/ComplianceRepository';
 import { ShipCompliance, ComplianceBalance } from '../../../core/domain/entities/Compliance';

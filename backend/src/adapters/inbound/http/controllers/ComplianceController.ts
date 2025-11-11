@@ -1,6 +1,3 @@
-/**
- * Compliance Controller - HTTP Inbound Adapter
- */
 import { Request, Response } from 'express';
 import { ComputeComplianceBalanceUseCase } from '../../../../core/application/usecases/ComputeComplianceBalance';
 import { BankingRepository } from '../../../../core/ports/outbound/BankingRepository';
@@ -46,7 +43,6 @@ export class ComplianceController {
         return;
       }
 
-      // Get original balance
       const balance = await this.computeCBUseCase.getBalance(
         shipId as string,
         parseInt(year as string)
@@ -57,8 +53,7 @@ export class ComplianceController {
         return;
       }
 
-      // Get banked amounts applied
-      const bankedApplied = 0; // This would come from tracking applied bank entries
+      const bankedApplied = 0;
       const availableBanked = await this.bankingRepository.findAvailableBalance(shipId as string);
 
       const adjustedBalance = {

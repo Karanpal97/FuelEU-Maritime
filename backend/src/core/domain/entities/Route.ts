@@ -1,7 +1,4 @@
-/**
- * Route Entity - Core Domain
- * Represents a maritime shipping route with fuel and emissions data
- */
+ 
 export interface Route {
   id: number;
   routeId: string;

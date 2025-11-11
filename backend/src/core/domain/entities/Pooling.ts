@@ -1,7 +1,3 @@
-/**
- * Pooling Entity - Core Domain
- * Article 21 - Pooling of compliance balances
- */
 export interface Pool {
   id: number;
   year: number;

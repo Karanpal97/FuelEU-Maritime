@@ -1,7 +1,3 @@
-/**
- * Bank Surplus Use Case
- * Article 20 - Banking positive compliance balance
- */
 import { BankingRepository } from '../../ports/outbound/BankingRepository';
 import { ComplianceRepository } from '../../ports/outbound/ComplianceRepository';
 import { BankSurplusDTO, BankingResult } from '../../domain/entities/Banking';
@@ -13,13 +9,11 @@ export class BankSurplusUseCase {
   ) {}
 
   async execute(input: BankSurplusDTO): Promise<BankingResult> {
-    // Get current compliance balance
     const balance = await this.complianceRepository.getBalance(input.shipId, input.year);
     if (!balance) {
       throw new Error(`No compliance balance found for ship ${input.shipId} year ${input.year}`);
     }
 
-    // Validate: can only bank positive CB
     if (balance.cb <= 0) {
       return {
         success: false,
@@ -30,7 +24,6 @@ export class BankSurplusUseCase {
       };
     }
 
-    // Validate: amount must not exceed available CB
     if (input.amountGco2eq > balance.cb) {
       return {
         success: false,
@@ -41,7 +34,6 @@ export class BankSurplusUseCase {
       };
     }
 
-    // Create bank entry
     await this.bankingRepository.create({
       shipId: input.shipId,
       year: input.year,
@@ -49,15 +41,14 @@ export class BankSurplusUseCase {
       remainingGco2eq: input.amountGco2eq,
     });
 
-    // Update compliance balance (deduct banked amount)
     const newCB = balance.cb - input.amountGco2eq;
     await this.complianceRepository.save({
       shipId: input.shipId,
       year: input.year,
       cbGco2eq: newCB,
-      targetIntensity: 89.3368, // Should come from the original record
-      actualIntensity: 0, // Should come from the original record
-      energyInScope: 0, // Should come from the original record
+      targetIntensity: 89.3368, 
+      actualIntensity: 0, 
+      energyInScope: 0, 
     });
 
     return {

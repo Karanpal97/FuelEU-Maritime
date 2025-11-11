@@ -1,7 +1,4 @@
-/**
- * Route Repository Port - Outbound Interface
- * Defines contract for data persistence layer
- */
+
 import { Route, CreateRouteDTO, RouteFilters } from '../../domain/entities/Route';
 
 export interface RouteRepository {

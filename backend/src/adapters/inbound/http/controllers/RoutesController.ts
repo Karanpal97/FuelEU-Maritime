@@ -1,6 +1,3 @@
-/**
- * Routes Controller - HTTP Inbound Adapter
- */
 import { Request, Response } from 'express';
 import { RouteRepository } from '../../../../core/ports/outbound/RouteRepository';
 import { ComputeComparisonUseCase } from '../../../../core/application/usecases/ComputeComparison';

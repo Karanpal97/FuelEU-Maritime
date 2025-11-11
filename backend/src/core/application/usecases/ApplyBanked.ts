@@ -1,7 +1,3 @@
-/**
- * Apply Banked Use Case
- * Article 20 - Apply banked surplus to deficit
- */
 import { BankingRepository } from '../../ports/outbound/BankingRepository';
 import { ComplianceRepository } from '../../ports/outbound/ComplianceRepository';
 import { ApplyBankedDTO, BankingResult } from '../../domain/entities/Banking';
@@ -13,13 +9,11 @@ export class ApplyBankedUseCase {
   ) {}
 
   async execute(input: ApplyBankedDTO): Promise<BankingResult> {
-    // Get current deficit balance
     const balance = await this.complianceRepository.getBalance(input.shipId, input.deficitYear);
     if (!balance) {
       throw new Error(`No compliance balance found for ship ${input.shipId} year ${input.deficitYear}`);
     }
 
-    // Check available banked balance
     const availableBanked = await this.bankingRepository.findAvailableBalance(input.shipId);
     if (availableBanked <= 0) {
       return {
@@ -31,7 +25,6 @@ export class ApplyBankedUseCase {
       };
     }
 
-    // Validate: amount must not exceed available banked
     if (input.amountGco2eq > availableBanked) {
       return {
         success: false,
@@ -42,10 +35,8 @@ export class ApplyBankedUseCase {
       };
     }
 
-    // Apply banked amount to deficit
     const newCB = balance.cb + input.amountGco2eq;
 
-    // Update bank entries (deduct from oldest first - FIFO)
     const bankEntries = await this.bankingRepository.findByShip(input.shipId);
     let remaining = input.amountGco2eq;
     
@@ -58,7 +49,6 @@ export class ApplyBankedUseCase {
       remaining -= toDeduct;
     }
 
-    // Update compliance balance
     await this.complianceRepository.save({
       shipId: input.shipId,
       year: input.deficitYear,

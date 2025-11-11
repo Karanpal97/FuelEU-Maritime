@@ -1,6 +1,4 @@
-/**
- * Prisma Client Instance
- */
+
 import { PrismaClient } from '@prisma/client';
 
 // Create a single Prisma Client instance

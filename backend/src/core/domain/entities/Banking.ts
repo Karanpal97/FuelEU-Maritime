@@ -1,12 +1,9 @@
-/**
- * Banking Entity - Core Domain
- * Article 20 - Banking of surplus compliance balance
- */
+
 export interface BankEntry {
   id: number;
   shipId: string;
   year: number;
-  amountGco2eq: number; // Banked amount in gCO₂eq
+  amountGco2eq: number;
   remainingGco2eq: number; // Remaining amount available
   createdAt: Date;
   expiresAt?: Date; // Optional expiration

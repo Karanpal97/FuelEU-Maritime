@@ -1,7 +1,3 @@
-/**
- * Pooling Controller - HTTP Inbound Adapter
- * Article 21 - Pooling
- */
 import { Request, Response } from 'express';
 import { CreatePoolUseCase } from '../../../../core/application/usecases/CreatePool';
 
@@ -20,7 +16,6 @@ export class PoolingController {
         return;
       }
 
-      // Validate members structure
       for (const member of members) {
         if (!member.shipId || member.cbBefore === undefined) {
           res.status(400).json({ 
@@ -31,7 +26,6 @@ export class PoolingController {
         }
       }
 
-      // Validate pool before creation
       const validation = await this.createPoolUseCase.validate({
         year: parseInt(year),
         members: members.map((m: any) => ({
@@ -49,7 +43,6 @@ export class PoolingController {
         return;
       }
 
-      // Create pool
       const result = await this.createPoolUseCase.execute({
         year: parseInt(year),
         members: members.map((m: any) => ({

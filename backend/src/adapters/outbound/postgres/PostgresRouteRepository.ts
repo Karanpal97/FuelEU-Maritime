@@ -1,6 +1,3 @@
-/**
- * Prisma Route Repository Implementation
- */
 import { PrismaClient } from '@prisma/client';
 import { RouteRepository } from '../../../core/ports/outbound/RouteRepository';
 import { Route, CreateRouteDTO, RouteFilters } from '../../../core/domain/entities/Route';

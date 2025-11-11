@@ -1,6 +1,4 @@
-/**
- * Compliance Repository Port - Outbound Interface
- */
+
 import { ShipCompliance, ComplianceBalance } from '../../domain/entities/Compliance';
 
 export interface ComplianceRepository {

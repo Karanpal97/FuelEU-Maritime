@@ -1,6 +1,4 @@
-/**
- * Pooling Repository Port - Outbound Interface
- */
+
 import { Pool, PoolMember } from '../../domain/entities/Pooling';
 
 export interface PoolingRepository {

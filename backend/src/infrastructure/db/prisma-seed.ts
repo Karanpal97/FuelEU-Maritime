@@ -1,7 +1,3 @@
-/**
- * Prisma Database Seed Script
- * Seeds initial data including the 5 KPI routes
- */
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -66,30 +62,28 @@ const seedData = [
 
 async function seed(): Promise<void> {
   try {
-    console.log('🌱 Seeding database with Prisma...');
+    console.log(' Seeding database with Prisma...');
     
-    // Clear existing data
     await prisma.poolMember.deleteMany();
     await prisma.pool.deleteMany();
     await prisma.bankEntry.deleteMany();
     await prisma.shipCompliance.deleteMany();
     await prisma.route.deleteMany();
     
-    // Insert routes
     for (const route of seedData) {
       await prisma.route.create({
         data: route,
       });
     }
     
-    console.log('✅ Database seeded successfully');
+    console.log(' Database seeded successfully');
     console.log(`   - Inserted ${seedData.length} routes`);
     console.log(`   - Baseline: R001 (Container, HFO, 2024, 91.0 gCO₂e/MJ)`);
     
     await prisma.$disconnect();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
+    console.error('Seeding failed:', error);
     await prisma.$disconnect();
     process.exit(1);
   }

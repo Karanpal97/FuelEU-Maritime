@@ -1,6 +1,3 @@
-/**
- * Prisma Pooling Repository Implementation
- */
 import { PrismaClient } from '@prisma/client';
 import { PoolingRepository } from '../../../core/ports/outbound/PoolingRepository';
 import { Pool, PoolMember } from '../../../core/domain/entities/Pooling';

@@ -1,6 +1,3 @@
-/**
- * Prisma Banking Repository Implementation
- */
 import { PrismaClient } from '@prisma/client';
 import { BankingRepository } from '../../../core/ports/outbound/BankingRepository';
 import { BankEntry } from '../../../core/domain/entities/Banking';
