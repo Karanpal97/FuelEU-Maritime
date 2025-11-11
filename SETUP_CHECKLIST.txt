@@ -1,0 +1,99 @@
+╔══════════════════════════════════════════════════════════════════╗
+║   FUEL EU COMPLIANCE DASHBOARD - SETUP CHECKLIST                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📋 STEP 1: INSTALL POSTGRESQL (Required!)
+═══════════════════════════════════════════════════════════════════
+
+Run these commands:
+
+    sudo apt update
+    sudo apt install postgresql postgresql-contrib -y
+    sudo systemctl start postgresql
+    sudo -i -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+
+Test it works:
+
+    psql -U postgres -h localhost -c "SELECT 1;"
+
+You should see a "1" in the output.
+
+
+📋 STEP 2: RUN INSTALLATION SCRIPT
+═══════════════════════════════════════════════════════════════════
+
+Run this single command:
+
+    cd /home/karan/project/newclgprj && ./install-fixed.sh
+
+This will:
+  ✓ Check prerequisites
+  ✓ Create database
+  ✓ Install all dependencies
+  ✓ Setup configuration
+  ✓ Run migrations
+  ✓ Seed test data
+
+
+📋 STEP 3: START BACKEND (Terminal 1)
+═══════════════════════════════════════════════════════════════════
+
+    cd /home/karan/project/newclgprj/backend
+    npm run dev
+
+Wait for: "🚀 Fuel EU Compliance Backend running on port 3001"
+
+
+📋 STEP 4: START FRONTEND (Terminal 2 - NEW WINDOW)
+═══════════════════════════════════════════════════════════════════
+
+    cd /home/karan/project/newclgprj/frontend
+    npm run dev
+
+Wait for: "Local: http://localhost:3000/"
+
+
+📋 STEP 5: OPEN BROWSER
+═══════════════════════════════════════════════════════════════════
+
+    http://localhost:3000
+
+You should see the dashboard with 4 tabs! 🎉
+
+
+═══════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+Problem: "psql: command not found"
+Fix: Install PostgreSQL (see INSTALL_POSTGRES.md)
+
+Problem: "Database connection failed"  
+Fix: sudo systemctl start postgresql
+
+Problem: "Port already in use"
+Fix: lsof -ti:3001 | xargs kill -9
+
+Problem: Frontend dependencies not installed
+Fix: cd frontend && npm install
+
+═══════════════════════════════════════════════════════════════════
+QUICK REFERENCE
+═══════════════════════════════════════════════════════════════════
+
+Backend URL:  http://localhost:3001
+Frontend URL: http://localhost:3000
+API URL:      http://localhost:3001/api
+
+Database:     fueleu_compliance
+Username:     postgres
+Password:     postgres
+
+═══════════════════════════════════════════════════════════════════
+
+Need more help? Read:
+  • START_HERE.md - Start here guide
+  • INSTALL_POSTGRES.md - PostgreSQL installation
+  • COMPLETE_SETUP.md - Detailed setup guide
+  • README.md - Project overview
+

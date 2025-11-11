@@ -1,0 +1,88 @@
+// Prisma Schema for Fuel EU Compliance System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Routes table
+model Route {
+  id               Int      @id @default(autoincrement())
+  routeId          String   @unique @map("route_id")
+  vesselType       String   @map("vessel_type")
+  fuelType         String   @map("fuel_type")
+  year             Int
+  ghgIntensity     Decimal  @map("ghg_intensity") @db.Decimal(10, 4)
+  fuelConsumption  Decimal  @map("fuel_consumption") @db.Decimal(10, 2)
+  distance         Decimal  @db.Decimal(10, 2)
+  totalEmissions   Decimal  @map("total_emissions") @db.Decimal(10, 2)
+  isBaseline       Boolean  @default(false) @map("is_baseline")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([year])
+  @@index([vesselType], map: "idx_routes_vessel_type")
+  @@index([fuelType], map: "idx_routes_fuel_type")
+  @@index([isBaseline], map: "idx_routes_baseline")
+  @@map("routes")
+}
+
+// Ship Compliance table
+model ShipCompliance {
+  id               Int      @id @default(autoincrement())
+  shipId           String   @map("ship_id")
+  year             Int
+  cbGco2eq         Decimal  @map("cb_gco2eq") @db.Decimal(15, 2)
+  targetIntensity  Decimal  @map("target_intensity") @db.Decimal(10, 4)
+  actualIntensity  Decimal  @map("actual_intensity") @db.Decimal(10, 4)
+  energyInScope    Decimal  @map("energy_in_scope") @db.Decimal(15, 2)
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@unique([shipId, year])
+  @@index([shipId, year], map: "idx_ship_compliance_ship_year")
+  @@map("ship_compliance")
+}
+
+// Bank Entries table (Article 20)
+model BankEntry {
+  id              Int       @id @default(autoincrement())
+  shipId          String    @map("ship_id")
+  year            Int
+  amountGco2eq    Decimal   @map("amount_gco2eq") @db.Decimal(15, 2)
+  remainingGco2eq Decimal   @map("remaining_gco2eq") @db.Decimal(15, 2)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  expiresAt       DateTime? @map("expires_at")
+
+  @@index([shipId], map: "idx_bank_entries_ship")
+  @@map("bank_entries")
+}
+
+// Pools table (Article 21)
+model Pool {
+  id        Int          @id @default(autoincrement())
+  year      Int
+  createdAt DateTime     @default(now()) @map("created_at")
+  members   PoolMember[]
+
+  @@map("pools")
+}
+
+// Pool Members table
+model PoolMember {
+  id         Int     @id @default(autoincrement())
+  poolId     Int     @map("pool_id")
+  shipId     String  @map("ship_id")
+  cbBefore   Decimal @map("cb_before") @db.Decimal(15, 2)
+  cbAfter    Decimal @map("cb_after") @db.Decimal(15, 2)
+  allocation Decimal @db.Decimal(15, 2)
+
+  pool Pool @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
+  @@index([poolId], map: "idx_pool_members_pool")
+  @@index([shipId], map: "idx_pool_members_ship")
+  @@map("pool_members")
+}
