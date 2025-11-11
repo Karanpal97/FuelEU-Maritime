@@ -8,7 +8,7 @@ import { Card } from '../shared/Card';
 import { KPICard } from '../shared/KPICard';
 import { Table, Column } from '../shared/Table';
 import { ErrorMessage } from '../shared/ErrorMessage';
-import { FaUsers, FaShip, FaPlus, FaTrash, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaUsers, FaPlus, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
 import { MdGroupWork } from 'react-icons/md';
 
 export const PoolingTab: React.FC = () => {

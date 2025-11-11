@@ -1,7 +1,7 @@
 /**
  * Main App Component - Modern Dark Bluish Theme
  */
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { FaShip, FaChartBar, FaPiggyBank, FaUsers, FaAnchor } from 'react-icons/fa';
 import { HiSparkles } from 'react-icons/hi';
 import { Tabs } from './adapters/ui/components/shared/Tabs';

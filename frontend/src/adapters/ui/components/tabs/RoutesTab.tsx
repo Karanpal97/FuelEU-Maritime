@@ -8,7 +8,7 @@ import { Card } from '../shared/Card';
 import { Table, Column } from '../shared/Table';
 import { Loading } from '../shared/Loading';
 import { ErrorMessage } from '../shared/ErrorMessage';
-import { FaShip, FaFilter, FaStar, FaCheckCircle } from 'react-icons/fa';
+import {  FaFilter, FaStar, FaCheckCircle } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
 
 export const RoutesTab: React.FC = () => {
