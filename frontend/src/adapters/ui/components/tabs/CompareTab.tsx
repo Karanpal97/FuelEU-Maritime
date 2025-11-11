@@ -24,7 +24,7 @@ import {
 export const CompareTab: React.FC = () => {
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown | null>(null);
 
   const fetchComparison = async () => {
     try {
@@ -33,7 +33,7 @@ export const CompareTab: React.FC = () => {
       const data = await routesApi.getComparison();
       setComparison(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch comparison data');
+      setError(err); // Pass the full error object
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export const CompareTab: React.FC = () => {
   }, []);
 
   if (loading) return <Loading />;
-  if (error) return <ErrorMessage message={error} onRetry={fetchComparison} />;
+  if (error !== null) return <ErrorMessage error={error} onRetry={fetchComparison} />;
   if (!comparison) return null;
 
   const allRoutes: RouteComparison[] = [comparison.baseline, ...comparison.comparisons];

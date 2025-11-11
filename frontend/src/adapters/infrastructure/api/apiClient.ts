@@ -1,7 +1,7 @@
 /**
- * API Client Base
+ * API Client Base - Enhanced Error Handling
  */
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -23,46 +23,72 @@ class ApiClient {
       timeout: 10000,
     });
 
-    // Response interceptor
+    // Response interceptor for better error handling
     this.client.interceptors.response.use(
       (response) => response,
-      (error) => {
-        console.error('API Error:', error);
+      (error: AxiosError<{ error?: string; message?: string }>) => {
+        // Log error for debugging
+        console.error('API Error:', {
+          url: error.config?.url,
+          method: error.config?.method,
+          status: error.response?.status,
+          message: error.response?.data?.error || error.response?.data?.message || error.message,
+        });
+        
+        // Re-throw the error with axios error object intact
+        // This preserves status code and response data
         throw error;
       }
     );
   }
 
   async get<T>(url: string, params?: Record<string, unknown>): Promise<T> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.client.get(url, { params });
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'API request failed');
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.client.get(url, { params });
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'API request failed');
+      }
+      return response.data.data as T;
+    } catch (error) {
+      // Re-throw axios errors to preserve status codes
+      throw error;
     }
-    return response.data.data as T;
   }
 
   async post<T>(url: string, data?: unknown): Promise<T> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.client.post(url, data);
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'API request failed');
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.client.post(url, data);
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'API request failed');
+      }
+      return response.data.data as T;
+    } catch (error) {
+      throw error;
     }
-    return response.data.data as T;
   }
 
   async put<T>(url: string, data?: unknown): Promise<T> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.client.put(url, data);
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'API request failed');
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.client.put(url, data);
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'API request failed');
+      }
+      return response.data.data as T;
+    } catch (error) {
+      throw error;
     }
-    return response.data.data as T;
   }
 
   async delete<T>(url: string): Promise<T> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.client.delete(url);
-    if (!response.data.success) {
-      throw new Error(response.data.error || 'API request failed');
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.client.delete(url);
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'API request failed');
+      }
+      return response.data.data as T;
+    } catch (error) {
+      throw error;
     }
-    return response.data.data as T;
   }
 }
 

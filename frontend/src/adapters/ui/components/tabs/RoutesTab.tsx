@@ -14,7 +14,7 @@ import { MdLocalShipping } from 'react-icons/md';
 export const RoutesTab: React.FC = () => {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown | null>(null);
   const [filters, setFilters] = useState<RouteFilters>({});
 
   const fetchRoutes = async () => {
@@ -24,7 +24,7 @@ export const RoutesTab: React.FC = () => {
       const data = await routesApi.getAllRoutes(filters);
       setRoutes(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch routes');
+      setError(err); // Pass the full error object
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,7 @@ export const RoutesTab: React.FC = () => {
       await routesApi.setBaseline(routeId);
       await fetchRoutes(); // Refresh data
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to set baseline');
+      setError(err); // Pass the full error object
     }
   };
 
@@ -159,7 +159,7 @@ export const RoutesTab: React.FC = () => {
 
       <Card title="Maritime Routes" icon={<MdLocalShipping />}>
         {loading && <Loading message="Loading routes..." />}
-        {error && <ErrorMessage message={error} onRetry={fetchRoutes} />}
+        {error !== null && <ErrorMessage error={error} onRetry={fetchRoutes} />}
         {!loading && !error && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm text-gray-400">

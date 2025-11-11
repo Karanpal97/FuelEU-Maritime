@@ -19,7 +19,7 @@ export const BankingTab: React.FC = () => {
   const [bankRecords, setBankRecords] = useState<BankRecordsResponse | null>(null);
   const [complianceBalance, setComplianceBalance] = useState<ComplianceBalance | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown | null>(null);
   const [bankAmount, setBankAmount] = useState('');
   const [applyAmount, setApplyAmount] = useState('');
   const [result, setResult] = useState<BankingResult | null>(null);
@@ -28,6 +28,7 @@ export const BankingTab: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
+      setResult(null); // Clear previous operation result
       const [records, balance] = await Promise.all([
         bankingApi.getBankRecords(shipId),
         complianceApi.getComplianceBalance(shipId, year),
@@ -35,7 +36,7 @@ export const BankingTab: React.FC = () => {
       setBankRecords(records);
       setComplianceBalance(balance);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch banking data');
+      setError(err); // Pass the full error object
     } finally {
       setLoading(false);
     }
@@ -50,7 +51,7 @@ export const BankingTab: React.FC = () => {
       setError(null);
       const amount = parseFloat(bankAmount);
       if (isNaN(amount) || amount <= 0) {
-        setError('Please enter a valid positive amount');
+        setError(new Error('Please enter a valid positive amount'));
         return;
       }
       const res = await bankingApi.bankSurplus(shipId, year, amount);
@@ -58,7 +59,7 @@ export const BankingTab: React.FC = () => {
       setBankAmount('');
       await fetchData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to bank surplus');
+      setError(err); // Pass the full error object
     }
   };
 
@@ -67,7 +68,7 @@ export const BankingTab: React.FC = () => {
       setError(null);
       const amount = parseFloat(applyAmount);
       if (isNaN(amount) || amount <= 0) {
-        setError('Please enter a valid positive amount');
+        setError(new Error('Please enter a valid positive amount'));
         return;
       }
       const res = await bankingApi.applyBanked(shipId, year, amount);
@@ -75,7 +76,7 @@ export const BankingTab: React.FC = () => {
       setApplyAmount('');
       await fetchData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to apply banked surplus');
+      setError(err); // Pass the full error object
     }
   };
 
@@ -136,7 +137,7 @@ export const BankingTab: React.FC = () => {
       </Card>
 
       {loading && <Loading />}
-      {error && <ErrorMessage message={error} onRetry={fetchData} />}
+      {error !== null && <ErrorMessage error={error} onRetry={fetchData} />}
 
       {!loading && !error && complianceBalance && bankRecords && (
         <>
@@ -163,22 +164,30 @@ export const BankingTab: React.FC = () => {
             />
           </div>
 
-          {result && (
+          {result && result.cbBefore !== undefined && result.cbAfter !== undefined && (
             <Card>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-semibold text-green-900 mb-2">Operation Result</h4>
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">CB Before:</span>
-                    <span className="ml-2 font-medium">{result.cbBefore.toLocaleString()}</span>
+              <div className="bg-gradient-to-br from-accent-green/20 to-accent-green/5 border border-accent-green/30 rounded-xl p-6 backdrop-blur-sm animate-scale-in">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-accent-green/20 rounded-lg">
+                    <FaCheckCircle className="w-5 h-5 text-accent-green" />
                   </div>
-                  <div>
-                    <span className="text-gray-600">Applied:</span>
-                    <span className="ml-2 font-medium">{result.applied.toLocaleString()}</span>
+                  <h4 className="text-lg font-semibold text-accent-green">Operation Successful</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-dark-surface/50 rounded-lg p-4">
+                    <span className="text-sm text-gray-400 block mb-1">CB Before</span>
+                    <span className="text-xl font-bold text-gray-100">{result.cbBefore.toLocaleString()}</span>
+                    <span className="text-xs text-gray-500 ml-2">gCO₂eq</span>
                   </div>
-                  <div>
-                    <span className="text-gray-600">CB After:</span>
-                    <span className="ml-2 font-medium">{result.cbAfter.toLocaleString()}</span>
+                  <div className="bg-dark-surface/50 rounded-lg p-4">
+                    <span className="text-sm text-gray-400 block mb-1">Applied</span>
+                    <span className="text-xl font-bold text-primary-400">{result.applied.toLocaleString()}</span>
+                    <span className="text-xs text-gray-500 ml-2">gCO₂eq</span>
+                  </div>
+                  <div className="bg-dark-surface/50 rounded-lg p-4">
+                    <span className="text-sm text-gray-400 block mb-1">CB After</span>
+                    <span className="text-xl font-bold text-accent-green">{result.cbAfter.toLocaleString()}</span>
+                    <span className="text-xs text-gray-500 ml-2">gCO₂eq</span>
                   </div>
                 </div>
               </div>

@@ -17,7 +17,7 @@ export const PoolingTab: React.FC = () => {
     { shipId: '', cbBefore: 0 },
   ]);
   const [result, setResult] = useState<PoolResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown | null>(null);
   const [loading, setLoading] = useState(false);
 
   const addMember = () => {
@@ -42,7 +42,7 @@ export const PoolingTab: React.FC = () => {
       const balance = await complianceApi.getComplianceBalance(member.shipId, year);
       updateMember(index, 'cbBefore', balance.cb);
     } catch (err) {
-      setError(`Failed to load CB for ${member.shipId}`);
+      setError(err); // Pass the full error object
     }
   };
 
@@ -78,7 +78,7 @@ export const PoolingTab: React.FC = () => {
 
       const validation = validatePool();
       if (!validation.isValid) {
-        setError(validation.errors.join(', '));
+        setError(new Error(validation.errors.join(', ')));
         setLoading(false);
         return;
       }
@@ -86,7 +86,7 @@ export const PoolingTab: React.FC = () => {
       const poolResult = await poolingApi.createPool(year, members);
       setResult(poolResult);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create pool');
+      setError(err); // Pass the full error object
     } finally {
       setLoading(false);
     }
@@ -224,7 +224,7 @@ export const PoolingTab: React.FC = () => {
         />
       </div>
 
-      {error && <ErrorMessage message={error} />}
+      {error !== null && <ErrorMessage error={error} />}
 
       <Card>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
